@@ -1,7 +1,4 @@
-import { l, log, logLevel } from '../logger'
-
-//INFO: в дальнейшем можно добавить конструктор (с часовым поясом, например) 
-
+// INFO: в дальнейшем можно добавить конструктор (с часовым поясом, например) 
 
 const weekdays = {
     mo: 1,
@@ -27,7 +24,7 @@ export default class Time {
         },
         date = new Date()
     ) {
-        let dt = new Date(date)
+        const dt = new Date(date)
         if (options.years != null)
             dt.setFullYear(dt.getFullYear() + options.years)
         if (options.months != null)
@@ -51,15 +48,15 @@ export default class Time {
         if (Object.prototype.toString.call(date) === '[object Date]') return date
         date = date + ''
         let split = date.split('.')
-        if (!split || split.length == 1)
+        if (!split || split.length === 1)
             split = date.split('/')
-        let year = split.length == 3 ? split[2] : (new Date()).getFullYear()
+        let year = split.length === 3 ? split[2] : (new Date()).getFullYear()
         year = +year
         if (year.toString().length < 4)
             year += 2000
         if (year > new Date().getFullYear()) year -= 100
         const month = split.length > 1 ? split[1] : (new Date()).getMonth() + 1
-        const day = parseInt(split[0])
+        const day = parseInt(split[0], 10)
         if (isNaN(day))
             return null
         return new Date(year, month - 1, day)
@@ -70,12 +67,6 @@ export default class Time {
     }
 
     dateTimeString(date = new Date()) {
-        const options = {
-            year: '2-digit', month: 'numeric', day: 'numeric',
-            hour: '2-digit', minute: '2-digit', second: 'numeric',
-            hour12: false,
-            weekday: "long"
-        }
         return `${this.dateString(date)} ${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}:${("0" + date.getSeconds()).slice(-2)}`
     }
 
@@ -154,12 +145,12 @@ export default class Time {
         }
         // день недели
         const weekday = this.getWeekday(search)
-        if (weekday != weekdays.unknown) {
+        if (weekday !== weekdays.unknown) {
             const start = this.getWeekday(after.getDay())
             let diff = 0
-            if (start > weekday) {//искомый день на этой неделе
+            if (start > weekday) { // искомый день на этой неделе
                 diff = weekday - start
-            } else if (start < weekday) { //искомый день на прошлой неделе
+            } else if (start < weekday) { // искомый день на прошлой неделе
                 diff = 7 - start - weekday
                 diff = weekday - start - 7
             }
@@ -170,8 +161,8 @@ export default class Time {
     }
 
     isDateSame(d1, d2) {
-        return d1.getFullYear() == d2.getFullYear()
-            && d1.getMonth() == d2.getMonth()
-            && d1.getDate() == d2.getDate()
+        return d1.getFullYear() === d2.getFullYear()
+            && d1.getMonth() === d2.getMonth()
+            && d1.getDate() === d2.getDate()
     }
 }

@@ -8,7 +8,7 @@ export default class FileSystem {
         return new Promise((resolve, reject) => {
             fs.readFile(file, (err, data) => {
                 if (err) return reject(err);
-                resolve(data);
+                return resolve(data);
             });
         })
     }
@@ -16,7 +16,7 @@ export default class FileSystem {
         return new Promise((resolve, reject) => {
             fs.writeFile(file, data, (err) => {
                 if (err) return reject(err);
-                resolve();
+                return resolve();
             });
         })
     }
@@ -24,7 +24,7 @@ export default class FileSystem {
         return new Promise((resolve, reject) => {
             fs.appendFile(file, data, (err) => {
                 if (err) return reject(err);
-                resolve();
+                return resolve();
             });
         })
     }
@@ -33,7 +33,7 @@ export default class FileSystem {
         return new Promise((resolve, reject) => {
             jsonfile.readFile(file, (err, data) => {
                 if (err) return reject(err);
-                resolve(data);
+                return resolve(data);
             });
         })
     }
@@ -41,7 +41,7 @@ export default class FileSystem {
         return new Promise((resolve, reject) => {
             jsonfile.writeFile(file, data, (err) => {
                 if (err) return reject(err);
-                resolve();
+                return resolve();
             });
         })
     }
