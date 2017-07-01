@@ -8,7 +8,7 @@ module.exports = {
     "extends": "airbnb-base",
     "rules": {
         // indentation
-        "indent": ["error", 4],
+        "indent": ["error", 4, { "SwitchCase": 1 }],
 
         // semicolons
         "semi": ["off"],
@@ -24,11 +24,11 @@ module.exports = {
 
         // https://medium.freecodecamp.org/adding-some-air-to-the-airbnb-style-guide-3df40e31c57a
         // code arrangement matter
-        "no-use-before-define": [ "error", { "functions": false } ],
-        
+        "no-use-before-define": ["error", { "functions": false }],
+
         // keep it simple
-        "complexity": [ "warn", 5 ],
-        
+        "complexity": ["warn", 10],
+
         // react
         // "react/prefer-es6-class": 0,
         // "react/jsx-filename-extension": 0,

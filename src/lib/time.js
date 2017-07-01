@@ -1,4 +1,4 @@
-// INFO: в дальнейшем можно добавить конструктор (с часовым поясом, например) 
+// INFO: в дальнейшем можно добавить конструктор (с часовым поясом, например)
 
 const weekdays = {
     mo: 1,
@@ -46,10 +46,10 @@ export default class Time {
     // 16.12.2017 | 16/12/2016 | 16.12.16 | 16/12 = 16/12/текущий год | 16 - текущий месяц
     getDate(date = new Date()) {
         if (Object.prototype.toString.call(date) === '[object Date]') return date
-        date = date + ''
-        let split = date.split('.')
+        const d = `${date}`
+        let split = d.split('.')
         if (!split || split.length === 1)
-            split = date.split('/')
+            split = d.split('/')
         let year = split.length === 3 ? split[2] : (new Date()).getFullYear()
         year = +year
         if (year.toString().length < 4)
@@ -67,31 +67,28 @@ export default class Time {
     }
 
     dateTimeString(date = new Date()) {
-        return `${this.dateString(date)} ${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}:${("0" + date.getSeconds()).slice(-2)}`
+        return `${this.dateString(date)} ${`0${date.getHours()}`.slice(-2)}:${`0${date.getMinutes()}`.slice(-2)}:${`0${date.getSeconds()}`.slice(-2)}`
     }
 
     dateString(date = new Date(), isFullYear = false) {
         // сокращенная запись только для этого столетия
         const century = Math.floor(date.getFullYear() / 100) * 100
-        let yearDiff = isFullYear ? 0 : century < 2000 ? 0 : 2000
-        return `${("0" + date.getDate()).slice(-2)}.${("0" + (date.getMonth() + 1)).slice(-2)}.${date.getFullYear() - yearDiff}`
+        const yearDiff = isFullYear || century < 2000 ? 0 : 2000
+        return `${`0${date.getDate()}`.slice(-2)}.${`0${(date.getMonth() + 1)}`.slice(-2)}.${date.getFullYear() - yearDiff}`
     }
-
-
 
     getWeekday(day) {
         if (day === null || day === undefined)
             return weekdays.unknown
-        day = (day + '').toLowerCase()
-        if (day == '1' || day == 'пн' || day == 'mo') return weekdays.mo
-        if (day == '2' || day == 'вт' || day == 'tu') return weekdays.tu
-        if (day == '3' || day == 'ср' || day == 'we') return weekdays.we
-        if (day == '4' || day == 'чт' || day == 'th') return weekdays.th
-        if (day == '5' || day == 'пт' || day == 'fr') return weekdays.fr
-        if (day == '6' || day == 'сб' || day == 'sa') return weekdays.sa
-        if (day == '0' || day == 'вс' || day == 'su') return weekdays.su
+        const d = `${day}`.toLowerCase()
+        if (d === '1' || d === 'пн' || d === 'mo') return weekdays.mo
+        if (d === '2' || d === 'вт' || d === 'tu') return weekdays.tu
+        if (d === '3' || d === 'ср' || d === 'we') return weekdays.we
+        if (d === '4' || d === 'чт' || d === 'th') return weekdays.th
+        if (d === '5' || d === 'пт' || d === 'fr') return weekdays.fr
+        if (d === '6' || d === 'сб' || d === 'sa') return weekdays.sa
+        if (d === '0' || d === 'вс' || d === 'su') return weekdays.su
         return weekdays.unknown
-
     }
 
     dateWeekdayString(date = new Date()) {
@@ -107,22 +104,25 @@ export default class Time {
             case weekdays.th: return 'Чт'
             case weekdays.fr: return 'Пт'
             case weekdays.sa: return 'Сб'
-            case weekdays.su: //case zero problem
+            case weekdays.su: // case zero problem
             default: return 'Вс'
         }
     }
 
-    getMonday(d = new Date(), next = false) {
-        d = new Date(d);
+    getMonday(date = new Date(), next = false) {
+        const d = new Date(date);
         const day = d.getDay()
         let diff
         if (!next && diff === 1) {
             diff = 0
-        } else
-            diff = 7 - day + (day === 0 ? -6 : 1)
+        } else {
+            // diff = 7 - day + (day === 0 ? -6 : 1)
+            diff = 7 - day
+            if (day === 0) diff -= 6;
+            else diff += 1
+        }
         return this.getStartDate(
             this.getChangedDateTime({ days: diff }, d))
-
     }
 
     daysBetween(d1, d2) {
@@ -131,13 +131,13 @@ export default class Time {
 
     // search = mo | 16.12.2017 | 16.12 | 16
     getBack(search, after = new Date()) {
-        //дата
+        // дата
         const date = this.getDate(search)
         if (date) {
             if (date.getTime() <= after.getTime())
                 return date
-            const slashs = (search + '').split('/').length
-            const dots = (search + '').split('.').length
+            const slashs = `${search}`.split('/').length
+            const dots = `${search}`.split('.').length
             if (slashs === 2 || dots === 2)
                 return this.getChangedDateTime({ years: -1 }, date)
             if (slashs === 1 || dots === 1)
