@@ -22,6 +22,9 @@ module.exports = {
         // tracing comma
         "comma-dangle": "off",
 
+        // can use console.log()
+        "no-console": "off",
+
         // https://medium.freecodecamp.org/adding-some-air-to-the-airbnb-style-guide-3df40e31c57a
         // code arrangement matter
         "no-use-before-define": ["error", { "functions": false }],
