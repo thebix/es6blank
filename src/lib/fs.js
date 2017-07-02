@@ -4,7 +4,7 @@ import jsonfile from 'jsonfile'
 import { log } from '../logger'
 
 export default class FileSystem {
-    getFile(file) {
+    readFile(file) {
         return new Promise((resolve, reject) => {
             fs.readFile(file, (err, data) => {
                 if (err) return reject(err);
@@ -70,5 +70,13 @@ export default class FileSystem {
             fs.mkdirSync(path)
         }
         return true
+    }
+
+    readFileSync(file, options) {
+        try {
+            return fs.readFileSync(file, options)
+        } catch (ex) {
+            log(ex, logLevel.ERROR)
+        }
     }
 }
