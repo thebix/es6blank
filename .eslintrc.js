@@ -25,6 +25,23 @@ module.exports = {
         // can use console.log()
         "no-console": "off",
 
+        // a => ()
+        "arrow-parens": ["error", "as-needed"],
+
+        // let a, b
+        "one-var": "off",
+
+        // only arithmetic operations could be mixed
+        "no-mixed-operators": ["error", {
+            "groups": [
+                // ["+", "-", "*", "/", "%", "**"],
+                ["&", "|", "^", "~", "<<", ">>", ">>>"],
+                ["==", "!=", "===", "!==", ">", ">=", "<", "<="],
+                ["&&", "||"],
+                ["in", "instanceof"]
+            ]
+        }],
+
         // https://medium.freecodecamp.org/adding-some-air-to-the-airbnb-style-guide-3df40e31c57a
         // code arrangement matter
         "no-use-before-define": ["error", { "functions": false }],
