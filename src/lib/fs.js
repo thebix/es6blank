@@ -1,7 +1,7 @@
 import fs from 'fs'
 import jsonfile from 'jsonfile'
 
-import { log } from '../logger'
+import { log, logLevel } from '../logger'
 
 export default class FileSystem {
     readFile(file) {
@@ -14,7 +14,7 @@ export default class FileSystem {
     }
     saveFile(file, data) {
         return new Promise((resolve, reject) => {
-            fs.writeFile(file, data, (err) => {
+            fs.writeFile(file, data, err => {
                 if (err) return reject(err);
                 return resolve();
             });
@@ -22,13 +22,12 @@ export default class FileSystem {
     }
     appendFile(file, data) {
         return new Promise((resolve, reject) => {
-            fs.appendFile(file, data, (err) => {
+            fs.appendFile(file, data, err => {
                 if (err) return reject(err);
                 return resolve();
             });
         })
     }
-
     readJson(file) {
         return new Promise((resolve, reject) => {
             jsonfile.readFile(file, (err, data) => {
@@ -39,13 +38,14 @@ export default class FileSystem {
     }
     saveJson(file, data) {
         return new Promise((resolve, reject) => {
-            jsonfile.writeFile(file, data, (err) => {
+            jsonfile.writeFile(file, data, err => {
                 if (err) return reject(err);
                 return resolve();
             });
         })
     }
 
+    // sync
     isFileExistsSync(path, isMakeIfNot = false, isLogErrIfNot = false, data = '') {
         if (!fs.existsSync(path)) {
             if (isLogErrIfNot) {
@@ -58,7 +58,6 @@ export default class FileSystem {
         }
         return true
     }
-
     isDirExistsSync(path, isMakeIfNot = false, isLogErrIfNot = false) {
         if (!fs.existsSync(path)) {
             if (isLogErrIfNot) {
@@ -71,12 +70,12 @@ export default class FileSystem {
         }
         return true
     }
-
     readFileSync(file, options) {
         try {
             return fs.readFileSync(file, options)
         } catch (ex) {
             log(ex, logLevel.ERROR)
         }
+        return ''
     }
 }
