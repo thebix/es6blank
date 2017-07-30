@@ -1,7 +1,8 @@
+// Source: https://nodejs.org/api/fs.html
+
 import fs from 'fs'
 import jsonfile from 'jsonfile'
-
-import { log, logLevel } from '../logger'
+import Rx from 'rx'
 
 export default class FileSystem {
     readFile(file) {
@@ -44,12 +45,26 @@ export default class FileSystem {
             });
         })
     }
+    access(path, mode) {
+        return new Promise((resolve, reject) => {
+            fs.access(path, mode, err => {
+                if (err) reject(err)
+                resolve({ path, mode })
+            })
+        })
+    }
+    isExists(path) {
+        return this.access(path, fs.constants.F_OK)
+    }
+    accessRead(path) {
+        return this.access(path, fs.constants.R_OK)
+    }
 
     // sync
     isFileExistsSync(path, isMakeIfNot = false, isLogErrIfNot = false, data = '') {
         if (!fs.existsSync(path)) {
             if (isLogErrIfNot) {
-                log(`Директория или файл с путем '${path}' не существует. ${isMakeIfNot ? 'Создаем' : 'Не создаем'}`, logLevel.ERROR)
+                console.log(`Директория или файл с путем '${path}' не существует. ${isMakeIfNot ? 'Создаем' : 'Не создаем'}`)
             }
             if (!isMakeIfNot) {
                 return false
@@ -61,7 +76,7 @@ export default class FileSystem {
     isDirExistsSync(path, isMakeIfNot = false, isLogErrIfNot = false) {
         if (!fs.existsSync(path)) {
             if (isLogErrIfNot) {
-                log(`Директория или файл с путем '${path}' не существует. ${isMakeIfNot ? 'Создаем' : 'Не создаем'}`, logLevel.ERROR)
+                console.error(`Директория или файл с путем '${path}' не существует. ${isMakeIfNot ? 'Создаем' : 'Не создаем'}`)
             }
             if (!isMakeIfNot) {
                 return false
@@ -74,8 +89,45 @@ export default class FileSystem {
         try {
             return fs.readFileSync(file, options)
         } catch (ex) {
-            log(ex, logLevel.ERROR)
+            console.error(ex)
         }
         return ''
+    }
+}
+
+export class RxFileSystem {
+    constructor() {
+        this.filesystem = new FileSystem()
+    }
+    readFile(file) {
+        return Rx.Observable.fromPromise(this.filesystem.readFile(file))
+    }
+    saveFile(file, data) {
+        return Rx.Observable.fromPromise(this.filesystem.saveFile(file, data))
+    }
+    appendFile(file, data) {
+        return Rx.Observable.fromPromise(this.filesystem.appendFile(file, data))
+    }
+    readJson(file) {
+        return Rx.Observable.fromPromise(this.filesystem.readJson(file))
+    }
+    saveJson(file, data) {
+        return Rx.Observable.fromPromise(this.filesystem.saveJson(file, data))
+    }
+    createReadStream(file) {
+        return Rx.Observable.just(fs.createReadStream(file))
+    }
+    access(path, mode) {
+        return Rx.Observable.fromPromise(this.filesystem.access(path, mode))
+    }
+    isExists(path) {
+        return this.access(path, fs.constants.F_OK)
+            .flatMap(() => Rx.Observable.just(true))
+            .catch(() => Rx.Observable.just(false))
+    }
+    accessRead(path) {
+        return this.access(path, fs.constants.R_OK)
+            .flatMap(() => Rx.Observable.just(true))
+            .catch(() => Rx.Observable.just(false))
     }
 }

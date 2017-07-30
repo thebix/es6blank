@@ -5,3 +5,7 @@ import lib from './lib/index'
 log(`Start server ${_config.isProduction ? '<Production>' : '<Debug>'}`, logLevel.INFO)
 
 log(lib.time.dateTimeString())
+
+lib.www.response.subscribe(x =>
+    log(x)
+)
